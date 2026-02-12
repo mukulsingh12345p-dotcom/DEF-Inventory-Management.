@@ -63,17 +63,19 @@ export const HOStoreModule: React.FC<HOStoreProps> = ({ viewMode }) => {
                          </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-80">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-80 flex flex-col">
                          <h3 className="text-lg font-bold text-gray-700 mb-4">Stock Value by Category</h3>
-                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={categoryData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString()}`} cursor={{fill: '#f1f5f9'}} />
-                                <Bar dataKey="value" fill="#0ea5e9" barSize={60} radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                         <div className="flex-1 w-full min-h-0">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={categoryData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip formatter={(val) => `₹${Number(val).toLocaleString()}`} cursor={{fill: '#f1f5f9'}} />
+                                    <Bar dataKey="value" fill="#0ea5e9" barSize={60} radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                         </div>
                     </div>
                 </div>
             )}

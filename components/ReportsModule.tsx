@@ -105,7 +105,7 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     {/* Inventory Report Card */}
-                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow bg-gray-50">
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow bg-gray-50 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
                             <div className="bg-blue-100 p-3 rounded-lg text-blue-600">
                                 <PackageIcon />
@@ -115,19 +115,21 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
                             </span>
                         </div>
                         <h3 className="text-lg font-bold text-gray-800 mb-2">Current Inventory Status</h3>
-                        <p className="text-sm text-gray-600 mb-6 h-12">
+                        <p className="text-sm text-gray-600 mb-6 flex-grow">
                             Download a snapshot of current stock levels, including quantities, average values, and total asset worth.
                         </p>
-                        <button 
-                            onClick={handleDownloadInventory}
-                            className="w-full flex items-center justify-center gap-2 bg-white border-2 border-blue-600 text-blue-700 py-2.5 rounded-lg hover:bg-blue-50 font-semibold transition-colors"
-                        >
-                            <Download size={18} /> Download CSV
-                        </button>
+                        <div className="mt-auto">
+                            <button 
+                                onClick={handleDownloadInventory}
+                                className="w-full flex items-center justify-center gap-2 bg-white border-2 border-blue-600 text-blue-700 py-2.5 rounded-lg hover:bg-blue-50 font-semibold transition-colors"
+                            >
+                                <Download size={18} /> Download
+                            </button>
+                        </div>
                     </div>
 
                     {/* Transaction Report Card */}
-                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow bg-gray-50">
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow bg-gray-50 flex flex-col">
                         <div className="flex items-start justify-between mb-4">
                             <div className="bg-amber-100 p-3 rounded-lg text-amber-600">
                                 <FileText />
@@ -137,15 +139,17 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
                             </span>
                         </div>
                         <h3 className="text-lg font-bold text-gray-800 mb-2">Transaction History</h3>
-                        <p className="text-sm text-gray-600 mb-6 h-12">
+                        <p className="text-sm text-gray-600 mb-6 flex-grow">
                             Detailed log of all Purchases (Inward) and Issues (Outward) for the selected financial year.
                         </p>
-                        <button 
-                            onClick={handleDownloadTransactions}
-                            className="w-full flex items-center justify-center gap-2 bg-white border-2 border-amber-600 text-amber-700 py-2.5 rounded-lg hover:bg-amber-50 font-semibold transition-colors"
-                        >
-                            <Download size={18} /> Download CSV
-                        </button>
+                        <div className="mt-auto">
+                            <button 
+                                onClick={handleDownloadTransactions}
+                                className="w-full flex items-center justify-center gap-2 bg-white border-2 border-amber-600 text-amber-700 py-2.5 rounded-lg hover:bg-amber-50 font-semibold transition-colors"
+                            >
+                                <Download size={18} /> Download
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 
-import { School, Employee } from './types';
+import { School } from './types';
 
 export const SCHOOL_BRANCHES: string[] = [
   "Ambala",
@@ -31,26 +31,6 @@ export const SCHOOLS: School[] = SCHOOL_BRANCHES.map(name => ({
   id: name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(),
   name: name
 }));
-
-const DUMMY_NAMES = [
-  "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", "Ayaan", "Krishna", "Ishaan",
-  "Shaurya", "Atharv", "Neerav", "Rohan", "Mohan", "Sohan", "Rahul", "Vikram", "Anjali", "Priya"
-];
-
-export const MOCK_EMPLOYEES: Employee[] = [];
-
-SCHOOLS.forEach((school, index) => {
-  const startId = (index * 10) + 1;
-  for (let i = 0; i < 10; i++) {
-    const id = (startId + i).toString();
-    const name = DUMMY_NAMES[(startId + i) % DUMMY_NAMES.length];
-    MOCK_EMPLOYEES.push({
-      id: id,
-      name: name,
-      schoolId: school.id
-    });
-  }
-});
 
 export const DEFAULT_CATEGORIES = [
   "Arts and Craft",

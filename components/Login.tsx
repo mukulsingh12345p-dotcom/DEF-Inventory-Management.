@@ -77,13 +77,13 @@ export const Login: React.FC = () => {
     }
   };
 
-  const inputClasses = "pl-10 w-full rounded-lg border border-brand-700 bg-brand-900 px-4 py-2.5 text-white placeholder-brand-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-400 outline-none transition-all";
-  const selectClasses = "pl-10 w-full rounded-lg border border-brand-700 bg-brand-900 px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 focus:border-brand-400 outline-none appearance-none";
-  const iconClasses = "absolute left-3 top-3 text-brand-400";
+  const inputClasses = "pl-10 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all focus:bg-white";
+  const selectClasses = "pl-10 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none appearance-none focus:bg-white";
+  const iconClasses = "absolute left-3 top-3 text-gray-400";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col md:flex-row overflow-hidden">
         
         {/* Left Side - Visual */}
         <div className="hidden md:flex w-1/2 bg-brand-600 flex-col items-center justify-center p-12 text-white relative">
@@ -97,8 +97,14 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Right Side - Form */}
-        <div className="w-full md:w-1/2 p-8 md:p-12">
-          <div className="mb-8">
+        <div className="w-full md:w-1/2 p-6 md:p-12">
+          {/* Mobile Logo for context */}
+          <div className="md:hidden flex items-center justify-center gap-2 mb-6 text-brand-700">
+              <Building2 size={32} />
+              <span className="text-2xl font-bold">DarshanInv</span>
+          </div>
+
+          <div className="mb-6 md:mb-8 text-center md:text-left">
             <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
             <p className="text-gray-500">Please login to your account</p>
           </div>
@@ -107,7 +113,7 @@ export const Login: React.FC = () => {
           <div className="flex mb-8 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => { setActiveTab('HO'); setError(''); }}
-              className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-all ${
+              className={`flex-1 py-2 px-1 md:px-2 rounded-md text-xs md:text-sm font-medium transition-all ${
                 activeTab === 'HO' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -115,15 +121,15 @@ export const Login: React.FC = () => {
             </button>
             <button
               onClick={() => { setActiveTab('BRANCH'); setError(''); }}
-              className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-all ${
+              className={`flex-1 py-2 px-1 md:px-2 rounded-md text-xs md:text-sm font-medium transition-all ${
                 activeTab === 'BRANCH' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              School Branch
+              Branch
             </button>
              <button
               onClick={() => { setActiveTab('STORE'); setError(''); }}
-              className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-all ${
+              className={`flex-1 py-2 px-1 md:px-2 rounded-md text-xs md:text-sm font-medium transition-all ${
                 activeTab === 'STORE' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -175,9 +181,9 @@ export const Login: React.FC = () => {
                       onChange={(e) => setSelectedSchool(e.target.value)}
                       className={selectClasses}
                     >
-                      <option value="" className="bg-brand-900 text-white">-- Select School --</option>
+                      <option value="">-- Select School --</option>
                       {schools.map(school => (
-                        <option key={school.id} value={school.id} className="bg-brand-900 text-white">{school.name}</option>
+                        <option key={school.id} value={school.id}>{school.name}</option>
                       ))}
                     </select>
                   </div>
@@ -244,7 +250,7 @@ export const Login: React.FC = () => {
 
             {error && (
               <div className="p-3 bg-red-50 text-red-600 text-sm rounded-md border border-red-100 flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></div>
                  {error}
               </div>
             )}

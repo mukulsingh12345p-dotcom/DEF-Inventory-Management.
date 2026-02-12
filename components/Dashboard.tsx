@@ -10,12 +10,15 @@ import { FINANCIAL_YEARS, getCurrentFinancialYear, HO_STORE_ID } from '../consta
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
-import { LogOut, LayoutDashboard, Shield, Package, School as SchoolIcon, KeyRound, ArrowDownToLine, ArrowUpFromLine, Calendar, Users, Trash2, Building, Bell, Send, FileSpreadsheet, X, ChevronRight, Layers, Lock, RotateCcw, Store, FolderInput, FolderOutput, LayoutGrid } from 'lucide-react';
+import { LogOut, LayoutDashboard, Shield, Package, School as SchoolIcon, KeyRound, ArrowDownToLine, ArrowUpFromLine, Calendar, Users, Trash2, Building, Bell, Send, FileSpreadsheet, X, ChevronRight, Layers, Lock, RotateCcw, Store, FolderInput, FolderOutput, LayoutGrid, Menu } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const { currentUser, logout, getComputedStock, schools, updatePassword, updateEmployeePassword, employees, addEmployee, removeEmployee, transactions, requests } = useAppStore();
   const [activeView, setActiveView] = useState<'DASH' | 'STOCK' | 'ISSUE' | 'RETURN' | 'ADMIN' | 'EMPLOYEES' | 'REQUESTS' | 'REPORTS' | 'HO_STORE_DASH' | 'HO_STORE_ADD' | 'HO_STORE_ISSUE'>('DASH');
   
+  // Mobile Menu State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // HO View State
   const [hoViewMode, setHoViewMode] = useState<'HOLISTIC' | 'SCHOOL'>('HOLISTIC');
   const [hoFilterSchool, setHoFilterSchool] = useState<string>('');
@@ -192,18 +195,26 @@ export const Dashboard: React.FC = () => {
     ? transactions.filter(t => t.type === 'ISSUE' && t.issuedToId === currentUser.employeeId)
     : [];
 
-  return (
-    <div className="flex h-screen bg-slate-50">
-      {/* Sidebar */}
-      <div className="hidden md:flex w-64 bg-slate-900 text-white flex-col shadow-xl">
-        <div className="p-6 border-b border-slate-700">
-            <h2 className="text-xl font-bold tracking-tight">Darshan<span className="text-brand-500">Inv</span></h2>
-            <p className="text-xs text-slate-400 mt-1">
-                {isHO ? 'Head Office Access' : isStoreManager ? 'Central Store Manager' : `${currentUser?.schoolId} Branch`}
-            </p>
-            <div className="mt-2 inline-block px-2 py-0.5 rounded bg-brand-900 text-brand-200 text-xs border border-brand-700">
-                {currentUser?.role} {isUser && `(ID: ${currentUser.employeeId})`}
+  const handleNavClick = (view: typeof activeView) => {
+      setActiveView(view);
+      setIsMobileMenuOpen(false); // Close menu on mobile
+  };
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+            <div>
+                <h2 className="text-xl font-bold tracking-tight">Darshan<span className="text-brand-500">Inv</span></h2>
+                <p className="text-xs text-slate-400 mt-1">
+                    {isHO ? 'Head Office Access' : isStoreManager ? 'Central Store Manager' : `${currentUser?.schoolId} Branch`}
+                </p>
+                <div className="mt-2 inline-block px-2 py-0.5 rounded bg-brand-900 text-brand-200 text-xs border border-brand-700">
+                    {currentUser?.role} {isUser && `(ID: ${currentUser.employeeId})`}
+                </div>
             </div>
+            <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-slate-400 hover:text-white">
+                <X size={24} />
+            </button>
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -211,31 +222,31 @@ export const Dashboard: React.FC = () => {
                 <div className="mb-6 space-y-2">
                     <div className="px-4 mb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">School Network</div>
                     <button 
-                        onClick={() => setActiveView('DASH')}
+                        onClick={() => handleNavClick('DASH')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'DASH' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <LayoutDashboard size={20} /> Dashboard
                     </button>
                     <button 
-                        onClick={() => setActiveView('STOCK')}
+                        onClick={() => handleNavClick('STOCK')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'STOCK' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Package size={20} /> Inventory View
                     </button>
                     <button 
-                        onClick={() => setActiveView('EMPLOYEES')}
+                        onClick={() => handleNavClick('EMPLOYEES')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'EMPLOYEES' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Users size={20} /> Employees
                     </button>
                     <button 
-                        onClick={() => setActiveView('REPORTS')}
+                        onClick={() => handleNavClick('REPORTS')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'REPORTS' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <FileSpreadsheet size={20} /> Reports
                     </button>
                     <button 
-                        onClick={() => setActiveView('ADMIN')}
+                        onClick={() => handleNavClick('ADMIN')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'ADMIN' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Shield size={20} /> Admin & Security
@@ -249,19 +260,19 @@ export const Dashboard: React.FC = () => {
                     {isHO && <div className="border-t border-slate-700 my-4"></div>}
                     <div className="px-4 mb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">Central Store</div>
                     <button 
-                        onClick={() => setActiveView('HO_STORE_DASH')}
+                        onClick={() => handleNavClick('HO_STORE_DASH')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'HO_STORE_DASH' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <LayoutGrid size={20} /> Store Dashboard
                     </button>
                     <button 
-                        onClick={() => setActiveView('HO_STORE_ADD')}
+                        onClick={() => handleNavClick('HO_STORE_ADD')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'HO_STORE_ADD' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <FolderInput size={20} /> Add Stock
                     </button>
                     <button 
-                        onClick={() => setActiveView('HO_STORE_ISSUE')}
+                        onClick={() => handleNavClick('HO_STORE_ISSUE')}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${activeView === 'HO_STORE_ISSUE' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <FolderOutput size={20} /> Issue Stock
@@ -272,13 +283,13 @@ export const Dashboard: React.FC = () => {
             {isUser && (
                  <div className="space-y-2">
                     <button 
-                        onClick={() => setActiveView('DASH')}
+                        onClick={() => handleNavClick('DASH')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'DASH' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Package size={20} /> My Items
                     </button>
                     <button 
-                        onClick={() => setActiveView('REQUESTS')}
+                        onClick={() => handleNavClick('REQUESTS')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'REQUESTS' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Send size={20} /> Request Item
@@ -289,31 +300,31 @@ export const Dashboard: React.FC = () => {
             {isAccountant && (
                 <div className="space-y-2">
                     <button 
-                        onClick={() => setActiveView('DASH')}
+                        onClick={() => handleNavClick('DASH')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'DASH' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <LayoutDashboard size={20} /> Dashboard
                     </button>
                     <button 
-                        onClick={() => setActiveView('STOCK')}
+                        onClick={() => handleNavClick('STOCK')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'STOCK' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <Package size={20} /> Add Stock
                     </button>
                     <button 
-                        onClick={() => setActiveView('ISSUE')}
+                        onClick={() => handleNavClick('ISSUE')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'ISSUE' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <LogOut size={20} /> Issue Stock
                     </button>
                     <button 
-                        onClick={() => setActiveView('RETURN')}
+                        onClick={() => handleNavClick('RETURN')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'RETURN' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <RotateCcw size={20} /> Return Issue
                     </button>
                     <button 
-                        onClick={() => setActiveView('REQUESTS')}
+                        onClick={() => handleNavClick('REQUESTS')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors justify-between ${activeView === 'REQUESTS' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                         <div className="flex items-center gap-3">
@@ -326,14 +337,14 @@ export const Dashboard: React.FC = () => {
                         )}
                     </button>
                     <button 
-                    onClick={() => setActiveView('EMPLOYEES')}
+                    onClick={() => handleNavClick('EMPLOYEES')}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'EMPLOYEES' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                     <Users size={20} /> Employees
                     </button>
 
                     <button 
-                    onClick={() => setActiveView('REPORTS')}
+                    onClick={() => handleNavClick('REPORTS')}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'REPORTS' ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                     >
                     <FileSpreadsheet size={20} /> Reports
@@ -350,30 +361,59 @@ export const Dashboard: React.FC = () => {
                 <LogOut size={18} /> Logout
             </button>
         </div>
+    </>
+  );
+
+  return (
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex w-64 bg-slate-900 text-white flex-col shadow-xl flex-shrink-0">
+        <SidebarContent />
+      </div>
+
+      {/* Mobile Sidebar & Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-black/50 md:hidden backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <SidebarContent />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col">
+      <div className="flex-1 flex flex-col h-full overflow-hidden w-full">
         
-        {/* Top Header & Navigation */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-            <div className="px-8 py-6">
+        {/* Mobile Header */}
+        <div className="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md flex-shrink-0 z-30">
+            <div className="flex items-center gap-2">
+                <button onClick={() => setIsMobileMenuOpen(true)} className="p-1 hover:bg-slate-800 rounded">
+                    <Menu size={24} />
+                </button>
+                <span className="font-bold text-lg tracking-tight">Darshan<span className="text-brand-500">Inv</span></span>
+            </div>
+            <div className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700">
+                {isHO ? 'HO' : isStoreManager ? 'Store' : currentUser?.schoolId?.substring(0, 8)}
+            </div>
+        </div>
+
+        {/* Top Header & Navigation (Desktop & Mobile) */}
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-20 flex-shrink-0">
+            <div className="px-4 py-4 md:px-8 md:py-6">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">
+                    <div className="w-full lg:w-auto">
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-800 truncate">
                             {isHO ? 'Head Office Console' : isStoreManager ? 'Central Store Manager' : `Branch: ${currentUser?.schoolId}`}
                         </h1>
                         {isHO && (activeView === 'DASH' || activeView === 'STOCK') && (
-                            <div className="flex items-center gap-1 mt-2 bg-slate-100 p-1 rounded-lg inline-flex">
+                            <div className="flex items-center gap-1 mt-2 bg-slate-100 p-1 rounded-lg inline-flex w-full md:w-auto overflow-x-auto">
                                 <button
                                     onClick={() => setHoViewMode('HOLISTIC')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${hoViewMode === 'HOLISTIC' ? 'bg-white text-brand-700 shadow-sm border border-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`flex-1 md:flex-none px-3 py-1 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${hoViewMode === 'HOLISTIC' ? 'bg-white text-brand-700 shadow-sm border border-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
                                     Holistic View
                                 </button>
                                 <button
                                     onClick={() => setHoViewMode('SCHOOL')}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${hoViewMode === 'SCHOOL' ? 'bg-white text-brand-700 shadow-sm border border-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`flex-1 md:flex-none px-3 py-1 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${hoViewMode === 'SCHOOL' ? 'bg-white text-brand-700 shadow-sm border border-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
                                     School Level View
                                 </button>
@@ -382,15 +422,15 @@ export const Dashboard: React.FC = () => {
                     </div>
                     
                     {!isUser && !isStoreManager && (
-                    <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
                          {/* Branch Filter (HO Only - School Level) */}
                         {isHO && hoViewMode === 'SCHOOL' && (activeView === 'DASH' || activeView === 'STOCK') && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-black text-black">Select Branch:</span>
-                                <div className="relative">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+                                <span className="text-sm font-black text-black hidden sm:inline">Select Branch:</span>
+                                <div className="relative w-full sm:w-auto">
                                     <Building className="absolute left-3 top-2.5 text-gray-400" size={16} />
                                     <select 
-                                        className="border-2 border-gray-300 rounded-md py-2 pl-9 pr-4 text-sm bg-white shadow-sm focus:border-brand-500 text-black font-semibold"
+                                        className="w-full sm:w-48 border-2 border-gray-300 rounded-md py-2 pl-9 pr-4 text-sm bg-white shadow-sm focus:border-brand-500 text-black font-semibold"
                                         value={hoFilterSchool}
                                         onChange={(e) => setHoFilterSchool(e.target.value)}
                                     >
@@ -402,10 +442,10 @@ export const Dashboard: React.FC = () => {
                         )}
 
                         {/* Financial Year Selector */}
-                        <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                            <Calendar size={16} className="text-slate-500 ml-2" />
+                        <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200 w-full sm:w-auto">
+                            <Calendar size={16} className="text-slate-500 ml-2 flex-shrink-0" />
                             <select 
-                                className="bg-transparent border-none text-sm font-semibold text-slate-700 focus:ring-0 cursor-pointer"
+                                className="bg-transparent border-none text-sm font-semibold text-slate-700 focus:ring-0 cursor-pointer w-full"
                                 value={financialYear}
                                 onChange={(e) => setFinancialYear(e.target.value)}
                             >
@@ -420,7 +460,7 @@ export const Dashboard: React.FC = () => {
             </div>
         </div>
 
-        <div className="p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 w-full">
             {/* HO STORE VIEWS */}
             {(isHO || isStoreManager) && activeView === 'HO_STORE_DASH' && (
                 <HOStoreModule viewMode="DASH" />
@@ -436,7 +476,7 @@ export const Dashboard: React.FC = () => {
 
             {/* HO: Empty State for School Level View */}
             {isHO && hoViewMode === 'SCHOOL' && !hoFilterSchool && (activeView === 'DASH' || activeView === 'STOCK') && (
-                <div className="flex flex-col items-center justify-center h-96 bg-white rounded-xl border-2 border-dashed border-gray-300 text-gray-400">
+                <div className="flex flex-col items-center justify-center h-64 md:h-96 bg-white rounded-xl border-2 border-dashed border-gray-300 text-gray-400 text-center p-6">
                     <Building size={48} className="mb-4 text-gray-300" />
                     <h3 className="text-xl font-semibold text-gray-600">Please Select a Branch</h3>
                     <p>Choose a specific school branch from the dropdown above to view its data.</p>
@@ -470,14 +510,14 @@ export const Dashboard: React.FC = () => {
             {/* USER DASHBOARD VIEW */}
             {isUser && activeView === 'DASH' && (
                 <div className="max-w-4xl mx-auto">
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-6">
-                        <div className="flex items-center gap-4 border-b pb-6 mb-6">
-                           <div className="h-16 w-16 bg-brand-100 rounded-full flex items-center justify-center text-brand-600 text-2xl font-bold">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 mb-6">
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 border-b pb-6 mb-6 text-center md:text-left">
+                           <div className="h-16 w-16 bg-brand-100 rounded-full flex items-center justify-center text-brand-600 text-2xl font-bold flex-shrink-0">
                                {currentUser.name?.charAt(0)}
                            </div>
                            <div>
-                               <h2 className="text-2xl font-bold text-gray-800">Welcome, {currentUser.name}</h2>
-                               <p className="text-gray-500">Employee ID: {currentUser.employeeId} • {currentUser.schoolId}</p>
+                               <h2 className="text-xl md:text-2xl font-bold text-gray-800">Welcome, {currentUser.name}</h2>
+                               <p className="text-gray-500 text-sm md:text-base">Employee ID: {currentUser.employeeId} • {currentUser.schoolId}</p>
                            </div>
                         </div>
                         
@@ -487,8 +527,8 @@ export const Dashboard: React.FC = () => {
                                 You have no items currently issued.
                             </div>
                         ) : (
-                            <div className="overflow-hidden rounded-lg border border-gray-200">
-                                <table className="w-full text-sm text-left">
+                            <div className="overflow-x-auto rounded-lg border border-gray-200">
+                                <table className="w-full text-sm text-left whitespace-nowrap">
                                     <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
                                         <tr>
                                             <th className="px-6 py-3">Date</th>
@@ -518,14 +558,14 @@ export const Dashboard: React.FC = () => {
             {!isUser && !isStoreManager && activeView === 'DASH' && (!isHO || (isHO && (hoViewMode === 'HOLISTIC' || (hoViewMode === 'SCHOOL' && hoFilterSchool)))) && (
                 <div className="space-y-6">
                     {/* Category-wise Status Section */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                         <h3 className="text-lg font-semibold text-gray-700">
                             Status End of FY {financialYear}
                         </h3>
                         {/* Mini Aggregate Summary for Quick Reference */}
-                        <div className="flex gap-4 text-sm">
-                            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium border border-blue-100">
-                                Total Stock Value: ₹{stockData.reduce((acc, curr) => acc + (curr.quantity * curr.avgValue), 0).toLocaleString()}
+                        <div className="flex gap-4 text-sm w-full md:w-auto">
+                            <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium border border-blue-100 w-full text-center md:w-auto">
+                                Total Value: ₹{stockData.reduce((acc, curr) => acc + (curr.quantity * curr.avgValue), 0).toLocaleString()}
                             </span>
                         </div>
                     </div>
@@ -583,67 +623,71 @@ export const Dashboard: React.FC = () => {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-indigo-100 flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-indigo-500 font-bold uppercase tracking-wider">Units Purchased</p>
-                                <p className="text-4xl font-extrabold text-indigo-700 mt-2">
+                                <p className="text-3xl md:text-4xl font-extrabold text-indigo-700 mt-2">
                                     {totalPurchased}
                                 </p>
                                 <p className="text-xs text-gray-400 mt-1">During selected FY</p>
                             </div>
-                            <div className="h-16 w-16 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600">
-                                <ArrowDownToLine size={32} />
+                            <div className="h-12 w-12 md:h-16 md:w-16 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600">
+                                <ArrowDownToLine size={24} className="md:w-8 md:h-8" />
                             </div>
                         </div>
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-100 flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-orange-500 font-bold uppercase tracking-wider">Units Issued</p>
-                                <p className="text-4xl font-extrabold text-orange-700 mt-2">
+                                <p className="text-3xl md:text-4xl font-extrabold text-orange-700 mt-2">
                                     {totalIssued}
                                 </p>
                                 <p className="text-xs text-gray-400 mt-1">During selected FY</p>
                             </div>
-                            <div className="h-16 w-16 bg-orange-50 rounded-full flex items-center justify-center text-orange-600">
-                                <ArrowUpFromLine size={32} />
+                            <div className="h-12 w-12 md:h-16 md:w-16 bg-orange-50 rounded-full flex items-center justify-center text-orange-600">
+                                <ArrowUpFromLine size={24} className="md:w-8 md:h-8" />
                             </div>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                         {/* Bar Chart */}
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-80 md:h-96 flex flex-col">
                             <h3 className="text-lg font-semibold mb-4">Stock Value by Category</h3>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={categoryData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} />
-                                    <Tooltip formatter={(val: number) => `₹${val.toLocaleString()}`} cursor={{fill: '#f1f5f9'}} />
-                                    <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={40} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            <div className="flex-1 w-full min-h-0">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={categoryData}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                        <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                                        <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} />
+                                        <Tooltip formatter={(val: number) => `₹${val.toLocaleString()}`} cursor={{fill: '#f1f5f9'}} />
+                                        <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={40} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
 
                         {/* Pie Chart */}
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-96">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-80 md:h-96 flex flex-col">
                             <h3 className="text-lg font-semibold mb-4">Value Distribution</h3>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={categoryData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={100}
-                                        fill="#8884d8"
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {categoryData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip />
-                                    <Legend verticalAlign="bottom" height={36}/>
-                                </PieChart>
-                            </ResponsiveContainer>
+                            <div className="flex-1 w-full min-h-0">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={categoryData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={100}
+                                            fill="#8884d8"
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                        >
+                                            {categoryData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend verticalAlign="bottom" height={36}/>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
 
@@ -684,7 +728,7 @@ export const Dashboard: React.FC = () => {
 
             {activeView === 'EMPLOYEES' && (isHO || isAccountant) && (
                 <div className="space-y-8">
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
                         <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                            <Users className="text-brand-600"/> Add New Employee
                         </h2>
@@ -741,7 +785,7 @@ export const Dashboard: React.FC = () => {
                         </form>
                     </div>
 
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
                         <h2 className="text-xl font-bold mb-4">Employee Directory</h2>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
@@ -793,7 +837,7 @@ export const Dashboard: React.FC = () => {
             )}
 
             {activeView === 'ADMIN' && isHO && (
-                <div className="max-w-2xl bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                <div className="max-w-2xl bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b">
                         <KeyRound className="text-brand-600" size={28}/>
                         <div>
